@@ -161,3 +161,24 @@ now as you can see in the above controller the Request mapping has the path as "
 
 ![project structure](images/Capture10.JPG)
 
+## 7. calling with the path variable
+
+in this example we will try to get a user with a specific user id <br>
+we already have the abstract method defined in the Service class **"User findUserById(Integer id);"** we just need to add body for it in the implementation class . <br>
+
+```java
+//inside UserServiceImpl class
+@Override
+	public User findUserById(Integer id) {
+		return users.stream().filter(i-> i.getId()==id).findFirst().get();
+	}
+// inside UserController class
+
+@GetMapping("/users/{id}")
+	public User getUserById(@PathVariable("id") Integer id) {
+		return userService.findUserById(id);
+	}
+
+```
+
+![project structure](images/Capture11.JPG)
