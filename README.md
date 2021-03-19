@@ -195,7 +195,7 @@ we already have the abstract method defined in the Service class **"User findUse
 ![project structure](images/Capture11.JPG)
 
 ## 8. implementing the post method
-always remember, a successful post message should always give you **201** status message .<br>
+Always remember, a successful post message should give you **201 : created** status message .<br>
 but for now lets do the 200 way and in the next slide we will check the response entity and make it to 201
 
 1. the service implementation class 
@@ -226,3 +226,43 @@ but for now lets do the 200 way and in the next slide we will check the response
 ```
 ![project structure](images/Capture12.JPG)
 
+
+## 9. Enhancing post method to return 201 and the uri location
+
+to get 201 we need to return responseEntity on the return type of the post method instead of the list <br>
+
+```java
+URI uri = ServletUriComponentsBuilder
+				.fromCurrentRequest()
+				.path("/{id}")
+				.buildAndExpand(user.getId())
+				.toUri();
+```
+
+and the response entity should look like this
+
+```java
+ ResponseEntity.status(HttpStatus.CREATED)
+				.header("user header", uri.toString())
+				.body(userService.saveuser(user));
+```
+so the method will be as follows
+
+```java
+@PostMapping("/users")
+public ResponseEntity<List<User>>saveUser(@RequestBody User user) {
+		URI uri = ServletUriComponentsBuilder
+				.fromCurrentRequest()
+				.path("/{id}")
+				.buildAndExpand(user.getId())
+				.toUri();
+		
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.header("user header", uri.toString())
+				.body(userService.saveuser(user));
+	}
+```
+now if we will check the postman 
+![project structure](images/Capture13.JPG)
+and the header will look like this
+![project structure](images/Capture14.JPG)
