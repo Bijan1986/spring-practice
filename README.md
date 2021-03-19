@@ -160,3 +160,4 @@ public class UserController {
 now as you can see in the above controller the Request mapping has the path as "test" and the @GetMapping has the path as "/users" so the uri will become **"http://localhost:8080/test/users"** now run this in postman
 
 ![project structure](images/Capture10.JPG)
+
