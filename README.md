@@ -67,6 +67,8 @@ public class User {
 ```
 now we will create the **UserService** *interface* and annotate with **@Service** <br>
 ```java
+package com.example.demo.user;
+
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -74,13 +76,20 @@ import org.springframework.stereotype.Service;
 @Service
 public interface UserService {
 
+	// get list of all users
 	List<User> getAllUsers();
 
-	User saveuser(User user);
+	/*
+	 * save the new user to the list and get the list of all users (it should
+	 * include the new user too)
+	 */
+	List<User> saveuser(User user);
 
+	// get user based on id search
 	User findUserById(Integer id);
 
 }
+
 
 ```
 then we can create the Service implemantation class and make it implement the UserService interface .
@@ -110,7 +119,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User saveuser(User user) {
+	public List<User> saveuser(User user) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -166,6 +175,8 @@ now as you can see in the above controller the Request mapping has the path as "
 in this example we will try to get a user with a specific user id <br>
 we already have the abstract method defined in the Service class **"User findUserById(Integer id);"** we just need to add body for it in the implementation class . <br>
 
+> :red_circle: **@PathVariable** to be added to the method .
+
 ```java
 //inside UserServiceImpl class
 @Override
@@ -182,3 +193,36 @@ we already have the abstract method defined in the Service class **"User findUse
 ```
 
 ![project structure](images/Capture11.JPG)
+
+## 8. implementing the post method
+always remember, a successful post message should always give you **201** status message .<br>
+but for now lets do the 200 way and in the next slide we will check the response entity and make it to 201
+
+1. the service implementation class 
+```java
+@Override
+	public List<User> saveuser(User user) {
+		users.add(user);
+		return users;
+	}
+
+```
+
+2. the controller class
+```java
+@PostMapping("/users")
+	public List<User> saveUser(@RequestBody User user) {
+		return userService.saveuser(user);
+	}
+```
+
+3. postman
+>make sure to send the body as mentioned below
+```
+{
+    "id": 3,
+    "name": "Shazam"
+}
+```
+![project structure](images/Capture12.JPG)
+
