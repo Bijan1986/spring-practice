@@ -269,3 +269,85 @@ and the header will look like this
 
 ## 10. Implementing exception handling
 
+its always good to write your custom error message.
+> :red_circle: **@ControllerAdvice** has to be added to the custom exception class.
+lets go through the get user id service and see
+
+```java
+\\inside UserServiceImpl class
+@Override
+	public User findUserById(Integer id) {
+		Optional<User> userOpt = users.stream().filter(i -> i.getId() == id).findFirst();
+		
+		return userOpt.isPresent() ? userOpt.get():null;
+	}
+
+\\ create UserNotFound class
+public class UserNotFoundException extends RuntimeException {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4553824199994173031L;
+
+	private String message;
+
+	public UserNotFoundException(String message) {
+		super(message);
+		this.message = message;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+}
+
+\\ create the controller advice class and name it as ExceptionHelper class
+package com.example.demo.user;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+@ControllerAdvice
+public class ExceptionHelper extends ResponseEntityExceptionHandler {
+	private static final Logger logger = LoggerFactory.getLogger(ExceptionHelper.class);
+
+	@ExceptionHandler(UserNotFoundException.class)
+	public ResponseEntity<Object> userNotFoundException(UserNotFoundException unfe) {
+		logger.error("USER NOT FOUND: " +unfe.getMessage());
+		return new ResponseEntity<Object>(unfe.getMessage(), HttpStatus.NOT_FOUND);
+	}
+
+}
+
+
+\\now in the controller 
+
+	@GetMapping("/users/{id}")
+	public ResponseEntity<User> getUserById(@PathVariable("id") Integer id) {
+		User user = userService.findUserById(id);
+		if(user == null) {
+			throw new UserNotFoundException("user with id "+id+" does not exist .");
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(user);
+	}
+ // check this in postman
+ http://localhost:8080/test/users/9
+ 
+ this will give you 404 not found with a valid message and in the log 
+ you will see below message
+ 
+ ERROR 23336 --- [nio-8080-exec-1] com.example.demo.user.ExceptionHelper    : USER NOT FOUND: user with id 9 does not exist .
+
+
+```

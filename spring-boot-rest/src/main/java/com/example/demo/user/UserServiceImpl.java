@@ -2,6 +2,7 @@ package com.example.demo.user;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
@@ -21,15 +22,16 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User saveuser(User user) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<User> saveuser(User user) {
+		users.add(user);
+		return users;
 	}
 
 	@Override
 	public User findUserById(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+		Optional<User> userOpt = users.stream().filter(i -> i.getId() == id).findFirst();
+		
+		return userOpt.isPresent() ? userOpt.get():null;
 	}
 
 }
