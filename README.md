@@ -351,3 +351,65 @@ public class ExceptionHelper extends ResponseEntityExceptionHandler {
 
 
 ```
+## 11. Implementing swagger documentation 
+
+there are few tags that we need to have idea on .
+
+![project structure](images/Capture15.JPG)
+
+1. **Info Tag**: this will give you the highlevel view about the API
+
+![project structure](images/Capture16.JPG)
+
+2. **tags**: tags are used to group resources in to multiple catagories
+
+3. **path**: includes the details of all the resources we are exposing .
+
+![project structure](images/Capture17.JPG)
+
+4. **definations**: these are basically the objects .
+
+![project structure](images/Capture18.JPG)
+
+:ledger: lets create basic swagger documentation
+
+1. create a new class and name it as SwaggerConfig
+2. add @Configuration and @EnableSwagger2 to it .
+
+```java
+<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-boot-starter</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+==============================================================
+package com.example.demo;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+@Configuration
+@EnableSwagger2
+public class SwaggerConfig {
+	@Bean
+	public Docket postsApi() {
+		return new Docket(DocumentationType.SWAGGER_2);
+	}
+
+}
+
+//for api doc
+http://localhost:8080/v2/api-docs
+
+//for swagger ui
+http://localhost:8080/swagger-ui/index.html#/
+
+```
+
+
+
+
