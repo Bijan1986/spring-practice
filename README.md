@@ -410,6 +410,97 @@ http://localhost:8080/swagger-ui/index.html#/
 
 ```
 
+## 12 . Implementing static filtering with RESTFUL services
+
+lets say there is one field which we do not really want to show in the response ; then in that case we can use the static filtering .
+
+basically use **@JsonIgnore** on the field .
+
+```java
+@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class User {
+	private Integer id;
+	private String name;
+	@JsonIgnore
+	private int age;
+
+}
+
+```
+
+lets say there are too many fields that we want to ignore ; in that case we can use the **JsonIgnoreProperties** annotation in the class level with the field names .
+
+
+basically use "JsonIgnoreProperties" for static filtering .
+
+
+```java
+@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@JsonIgnoreProperties(value = { "age", "salary", "password" })
+public class User {
+	private Integer id;
+	private String name;
+	private int age;
+	private double salary;
+	private String password;
+
+}
+
+```
+## 13 . Implementing dynamic filtering with RESTFUL services
+
+if we want to disable one field based on the result of a condition then we can use dynamic filtering .
+
+```java
+package com.example.demo.user;
+
+import com.fasterxml.jackson.annotation.JsonFilter;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@JsonFilter("userFil")
+public class User {
+	private Integer id;
+	private String name;
+	private int age;
+	private double salary;
+	private String password;
+
+}
+
+//////////////////////////////////////////////////////////
+
+@GetMapping("/users/{id}")
+	public ResponseEntity<MappingJacksonValue> getUserById(@PathVariable("id") Integer id) {
+		User user = userService.findUserById(id);
+		if (user == null) {
+			throw new UserNotFoundException("user with id " + id + " does not exist .");
+		}
+		SimpleBeanPropertyFilter userBeanFilter = SimpleBeanPropertyFilter.filterOutAllExcept("salary","password");
+		FilterProvider userFilter = new SimpleFilterProvider().addFilter("userFil", userBeanFilter);
+		MappingJacksonValue mapping = new MappingJacksonValue(user);
+		mapping.setFilters(userFilter);
+		return ResponseEntity.status(HttpStatus.OK).body(mapping);
+	}
+	
+```
 
 
 
