@@ -12,8 +12,8 @@ public class UserServiceImpl implements UserService {
 	private static List<User> users = new ArrayList<>();
 
 	static {
-		users.add(new User(1, "Deadpool"));
-		users.add(new User(2, "Wolverine"));
+		users.add(new User(1, "Deadpool",33,2200.00,"testPass"));
+		users.add(new User(2, "Wolverine",38,2500.00,"testPass2"));
 	}
 
 	@Override
