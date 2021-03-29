@@ -506,7 +506,7 @@ public class User {
 ```
 
 
-# Book 2 : Spring security : from zero to hero (udemy)
+# Book 2 : Spring security : from zero to hero (udemy: https://www.udemy.com/course/spring-security-zero-to-master)
 
 ## section 1: Getting started 
 
@@ -546,10 +546,147 @@ spring.security.user.name=bijan
 spring.security.user.password=test
 
 ```
+### 1.1 : Understanding how multiple request works without spring credentials
 
-## section 2: Changing the default security configuration
+when you run the **http://localhost:8080/welcome** in browser it will first direct you to the **http://localhost:8080/login** page . here you can put your credentials and it will take you to the browser page . and once you are there , if you will try to refresh the page then you will notice that it does not take you back to the login page anymore . thats because it has stored the password as a cookie . we can see it better in the postman .
+
+![project structure](images/Capture19.JPG)
+
+![project structure](images/Capture20.JPG)
+
+![project structure](images/Capture21.JPG)
+
+![project structure](images/Capture22.JPG)
 
 
+## Section 2: Changing the default security configuration
+
+### Section 2.1: Creating backend services for the application
+this is what we are expected to build ...
+
+![project structure](images/Capture23.JPG)
+
+so basically we need to build those controllers . Lets build those 6 controllers in a package .
+
+![project structure](images/Capture24.JPG)
+
+### Section 2.2: Checking the default configuration inside the spring security library
+
+in this section we will create the configuration class and extend the configure method . In the future videos we will customize the overridden method to ask us for passwords in few scenarios .
+
+![project structure](images/Capture25.JPG)
+![project structure](images/Capture26.JPG)
+
+### Section 2.3: Modifying the code as per our custom requirements 
+
+>http.authorizeRequests((requests) -> requests.anyRequest().authenticated());
+
+if you notice in the code above ; it allows any request thats coming in to be authenticated .so in this section we will try to let it authenticate only for few specific request and permir for other services using the **"antMatchers()"** method .
+
+in this case we will disable the authorization and try to test the /contact service and see if it works or not in postman .
+
+```java
+package com.example.demo.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
+@Configuration
+public class SpringSecurityConfigurator extends WebSecurityConfigurerAdapter {
+	/**
+	 * myAccount -secured
+	 * myBalance - secured
+	 * myLoans - secured
+	 * myCards - secured
+	 * 
+	 * others not secured
+	 */
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.authorizeRequests((requests) -> requests.antMatchers("/myAccount").authenticated()
+				.antMatchers("/mybalance").authenticated()
+				.antMatchers("/myLoans").authenticated()
+				.antMatchers("/myCards").authenticated()
+				
+				//no need for security 
+				
+				.antMatchers("/contact").permitAll()
+				.antMatchers("/notices").permitAll());
+		http.formLogin();
+		http.httpBasic();
+	}
+
+}
 
 
+```
+
+![project structure](images/Capture27.JPG)
+
+
+### Section 2.4: Denying all the requests
+
+lets say we want to deny all requests eventhough they have all reqired authentications or not .
+
+> http.authorizeRequests(req->req.anyRequest().denyAll());
+
+```java
+
+package com.example.demo.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
+@Configuration
+public class SpringSecurityConfigurator extends WebSecurityConfigurerAdapter {
+	/**
+	 * myAccount -secured
+	 * myBalance - secured
+	 * myLoans - secured
+	 * myCards - secured
+	 * 
+	 * others not secured
+	 */
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		
+		//make every request to be authenticated
+		
+		/*
+		 * http.authorizeRequests(req->req.anyRequest().authenticated());
+		 * 
+		 */
+		
+		//accept few with authentication and for others no need to authenticate 
+		// just allow them .
+		
+		/*
+		 * http.authorizeRequests((requests) ->
+		 * requests.antMatchers("/myAccount").authenticated()
+		 * .antMatchers("/mybalance").authenticated()
+		 * .antMatchers("/myLoans").authenticated()
+		 * .antMatchers("/myCards").authenticated() .antMatchers("/contact").permitAll()
+		 * .antMatchers("/notices").permitAll());
+		 */
+		
+		// to deny all the request 
+		
+		http.authorizeRequests(req->req.anyRequest().denyAll());
+		
+		http.formLogin();
+		http.httpBasic();
+	}
+
+}
+
+
+```
+
+now if you will test the contact service with the basic authentication; you will get a forbidden error .
+
+![project structure](images/Capture28.JPG)
 
