@@ -506,6 +506,50 @@ public class User {
 ```
 
 
-# Book 2 : Spring security
+# Book 2 : Spring security : from zero to hero (udemy)
+
+## section 1: Getting started 
+
+lets create a simple web application and add spring security dependancy to it .
+
+```java
+<dependency>
+	<groupId>org.springframework.security</groupId>
+	<artifactId>spring-security-test</artifactId>
+	<scope>test</scope>
+</dependency>
+		
+// controller
+
+package com.example.demo.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class WelcomeController {
+	
+	@GetMapping("/welcome")
+	public String welcome() {
+		return "welcome to spring security";
+	}
+
+}
+
+// now when you run the app it will ask for the username and the password
+username: user
+Password: displayed on console
+
+//if you want to display custom generated details then mention this in the application.properties file
+
+spring.security.user.name=bijan
+spring.security.user.password=test
+
+```
+
+## section 2: Changing the default security configuration
+
+
+
 
 
