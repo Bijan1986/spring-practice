@@ -690,3 +690,13 @@ now if you will test the contact service with the basic authentication; you will
 
 ![project structure](images/Capture28.JPG)
 
+### Section 2.5: Permit all the requests
+
+its pretty straight-forward 
+
+> http.authorizeRequests(req->req.anyRequest().permitAll());
+
+now in postman if you make the authorisation as empty then also it will work .
+![project structure](images/Capture29.JPG)
+
+
