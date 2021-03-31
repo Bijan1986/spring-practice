@@ -700,3 +700,60 @@ now in postman if you make the authorisation as empty then also it will work .
 ![project structure](images/Capture29.JPG)
 
 
+## Section 3: Defining and managing users 
+
+![project structure](images/Capture30.JPG)
+
+### 3.1 : Configuring users using inMemoryAuthentication
+
+in this section we will learn how to configure for multiple user authentication and how to use password encoder .
+
+it will help us in preventing to mention passwords in the application.properties .
+
+for this we will override the **configure(AuthenticationManagerBuilder auth)** method .
+
+```java
+@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		// TODO Auto-generated method stub
+		auth.inMemoryAuthentication().withUser("admin").password("admin").authorities("admin").and()
+		.withUser("test").password("test").authorities("test")
+		.and()
+		.passwordEncoder(NoOpPasswordEncoder.getInstance());
+	}
+	
+
+```
+
+so basically now if we put the application.properties user name and password in the browser , it won't work .But if we put **"admin"** as username and **"admin"** as password then ideally it will work .
+
+
+![project structure](images/Capture31.JPG)
+
+![project structure](images/Capture32.JPG)
+
+
+### 3.2 : Configuring users using inMemoryUserDetailsManager
+
+in this case instead of using inMemoryAuthentication we will use InMemoryUserDetailsManager
+
+```java
+@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		// TODO Auto-generated method stub
+		InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager();
+		UserDetails userDetails1 = User.withUsername("developer").password("dev").authorities("development").build();
+		UserDetails userDetails2 = User.withUsername("tester").password("test").authorities("test").build();
+		inMemoryUserDetailsManager.createUser(userDetails1);
+		inMemoryUserDetailsManager.createUser(userDetails2);
+		auth.userDetailsService(inMemoryUserDetailsManager);
+	}
+	
+	@Bean
+	public PasswordEncoder pawd() {
+		return NoOpPasswordEncoder.getInstance();
+	}
+	
+
+```
+
