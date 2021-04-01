@@ -756,4 +756,70 @@ in this case instead of using inMemoryAuthentication we will use InMemoryUserDet
 	
 
 ```
+### 3.3 : Understanding userManagement interfaces and classes .
+
+![project structure](images/Capture33.JPG)
+
+### 3.4 : Deep dive in to UserDetails interface .
+
+### 3.5 : Deep dive in to UserDetailsService interface .
+
+### 3.6 : Done so far and the next thing to do .
+
+so far , as per the diagram above we have completed the InMemoryUserDetailsManager class . 
+
+lets try to use the JdbcUserDetailsManager class .
+
+in this case we will use the H2 in memory database . if we look at the code above , the Jdbc... class requires you to have a table named User with columns as "username" "password" and "enabled" . and somewhat the same for the "authorities" .
+
+so lets create a sql file and store below mentioned details there .
+
+![project structure](images/Capture34.JPG)
+
+```sql
+create table users(
+	username varchar_ignorecase(50) not null primary key,
+	password varchar_ignorecase(200) not null,
+	enabled boolean not null
+);
+
+create table authorities (
+	username varchar_ignorecase(50) not null,
+	authority varchar_ignorecase(50) not null,
+	constraint fk_authorities_users foreign key(username) references users(username)
+);
+
+```
+
+now lets put some data inside it as well 
+
+```sql
+insert into users (username, password, enabled) values ('bob', '{noop}123', true);
+insert into authorities (username, authority) values ('bob', 'ROLE_USER');
+
+insert into users (username, password, enabled) values ('sara', '{noop}234', true);
+insert into authorities (username, authority) values ('sara', 'ROLE_ADMIN');
+
+```
+
+now in the application.properties file we need to enable the h2 database .
+
+use it as a task .
+
+## Section 4 : Password management with password encoders .
+
+### 4.1 Deep dive in to password encoder
+
+![project structure](images/Capture35.JPG)
+
+**1. NoOpPasswordEncoder** :
+
+          1st of all its deprecated . so basically spring tells us not to use it . 
+**2. StandardPasswordEncoder** :
+
+      its better than the first one but still nothing to remember . its also deprecated to some extent .
+      
+
+
+
 
