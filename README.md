@@ -819,7 +819,12 @@ use it as a task .
 
       its better than the first one but still nothing to remember . its also deprecated to some extent .
       
+**3. BCryptPasswordEncoder** :
 
+        this is the most commonly used password encoder as it used "hashing" . 
 
+**4. SCryptPasswordEncoder** :
+
+        it has more added security features . recommended but still BCrypt is the most commonly used .
 
 
